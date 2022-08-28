@@ -47,7 +47,7 @@ async function getUserFromToken(token: string) {
   return user;
 }
 
-app.post("/sign-up", async (req, res) => {
+app.post("/register", async (req, res) => {
   const { email, password, userName } = req.body;
 
   try {
@@ -102,8 +102,7 @@ app.get("/validate", async (req, res) => {
 // #region "REST API Endpoints"
 
 // #region "Products REST API Endpoints"
-
-app.get("/products/page/:pagenr", async (req, res) => {
+app.get("/getAllProducts/page/:pagenr", async (req, res) => {
   const sortBy = req.query.sortBy;
   const ascOrDesc = req.query.ascOrDesc;
   const categoryName = req.query.category;
@@ -185,7 +184,7 @@ app.get("/products/page/:pagenr", async (req, res) => {
   }
 });
 
-app.get("/products/:name", async (req, res) => {
+app.get("/getProductByName/:name", async (req, res) => {
   const name = req.params.name
     .split("")
     .map((char) => (char === "-" ? " " : char))
@@ -205,7 +204,7 @@ app.get("/products/:name", async (req, res) => {
   }
 });
 
-app.get("/products", async (req, res) => {
+app.get("/getAllProducts", async (req, res) => {
   try {
     const products = await prisma.product.findMany({
       // @ts-ignore
@@ -218,7 +217,7 @@ app.get("/products", async (req, res) => {
   }
 });
 
-app.get("/productsCount", async (req, res) => {
+app.get("/getAllProductsCount", async (req, res) => {
   try {
     const count = await prisma.product.count();
     res.send({ count });
@@ -228,7 +227,7 @@ app.get("/productsCount", async (req, res) => {
   }
 });
 
-app.post("/searchProductsByName", async (req, res) => {
+app.post("/searchProductNameByCategory", async (req, res) => {
   const { name, page } = req.body;
 
   try {
@@ -254,61 +253,13 @@ app.post("/searchProductsByName", async (req, res) => {
     res.status(400).send({ error: err.message });
   }
 });
-
-// app.get("/favorites", async (req, res) => {
-//   const token = req.headers.authorization || "";
-
-//   try {
-//     const user = await getUserFromToken(token);
-
-//     const favorites = await prisma.favorite.findMany({
-//       where: { userId: user?.id },
-//     });
-
-//     res.send(favorites);
-//   } catch (err) {
-//     // @ts-ignore
-//     res.status(400).send({ error: err.message });
-//   }
-// });
-
-// app.post("/favorites", async (req, res) => {
-//   const token = req.headers.authorization || "";
-//   const { movieId } = req.body;
-
-//   try {
-//     const user = await getUserFromToken(token);
-
-//     const favorite = await prisma.favorite.create({
-//       //@ts-ignore
-//       data: { userId: user.id, movieId: movieId },
-//     });
-
-//     const favorites = await prisma.favorite.findMany({
-//       where: { userId: user?.id },
-//     });
-
-//     const generes = await prisma.genre.findMany();
-//     //@ts-ignore
-//     user.favMovies = await prisma.movie.findMany({
-//       where: { id: { in: favorites.map((f) => f.movieId) } },
-//       include: { genres: { include: { genre: true } } },
-//     });
-
-//     res.send(user);
-//   } catch (err) {
-//     // @ts-ignore
-//     res.status(400).send({ error: err.message });
-//   }
-// });
-
 // #endregion
 
 // #endregion
 
 // #region "OTHER REST API Endpoints"
 
-app.get("/users", async (req, res) => {
+app.get("/getAllUsers", async (req, res) => {
   try {
     const users = await prisma.user.findMany();
     res.send(users);
@@ -318,7 +269,23 @@ app.get("/users", async (req, res) => {
   }
 });
 
-app.get("/categories", async (req, res) => {
+app.get("/getUserById/:id", async (req, res) => {
+  const idParam = Number(req.params.id);
+  try {
+    const user = await prisma.user.findFirst({
+      where: { id: idParam },
+      include: {
+        boughtItems: { include: { product: { include: { category: true } } } },
+      },
+    });
+    res.send(user);
+  } catch (err) {
+    // @ts-ignore
+    res.status(400).send({ error: err.message });
+  }
+});
+
+app.get("/getAllCategories", async (req, res) => {
   try {
     const categories = await prisma.category.findMany({
       // @ts-ignore
@@ -331,37 +298,37 @@ app.get("/categories", async (req, res) => {
   }
 });
 
-app.get("/orders", async (req, res) => {
+app.get("/getAllBoughtProducts", async (req, res) => {
   try {
-    const orders = await prisma.order.findMany({
+    const bought = await prisma.bought.findMany({
       // @ts-ignore
       include: { product: true, user: true },
     });
-    res.send(orders);
+    res.send(bought);
   } catch (err) {
     // @ts-ignore
     res.status(400).send({ error: err.message });
   }
 });
 
-app.get("/orders/:id", async (req, res) => {
+app.get("/getBoughtItemById/:id", async (req, res) => {
   const id = Number(req.params.id);
 
   try {
-    const order = await prisma.category.findFirst({
+    const bought = await prisma.bought.findFirst({
       where: { id },
       //@ts-ignore
       include: { product: true, user: true },
     });
 
-    res.send(order);
+    res.send(bought);
   } catch (err) {
     // @ts-ignore
     res.status(400).send({ error: err.message });
   }
 });
 
-app.get("/categories/:name", async (req, res) => {
+app.get("/getCategoryByName/:name", async (req, res) => {
   const name = req.params.name
     .split("")
     .map((char) => (char === "-" ? " " : char))

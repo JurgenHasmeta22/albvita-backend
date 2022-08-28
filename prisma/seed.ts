@@ -45,7 +45,7 @@ const productsJson = `{
         },
         {
             "id": 5,
-            "name": "Dymatize Elite 100 % Whey",
+            "name": "Dymatize Elite 100% Whey",
             "price": "65",
             "image": "/images/Chocolate-Fudge.jpg",
             "stock": 3,
@@ -126,7 +126,7 @@ const productsJson = `{
         },
         {
             "id": 14,
-            "name": "Scitec 100 % Kompleks Casein",
+            "name": "Scitec 100% Kompleks Casein",
             "price": "32",
             "image": "/images/scitec.jpg",
             "stock": 1,
@@ -261,7 +261,7 @@ const productsJson = `{
         },
         {
             "id": 29,
-            "name": "Scitec  100% Peanut Butter",
+            "name": "Scitec 100% Peanut Butter",
             "price": "22",
             "image": "/images/scitec-100-peanut-butter.jpg",
             "stock": 5,
@@ -515,10 +515,10 @@ const categories = [
     },
 ];
 
-const orders = [
+const bought = [
     {
         id: 1,
-        quantity: 2,
+        quantity: 1,
         userId: 1,
         productId: 3,
     },
@@ -529,20 +529,14 @@ const orders = [
         productId: 2,
     },
     {
-        id: 3,
-        quantity: 7,
-        userId: 1,
-        productId: 3,
-    },
-    {
         id: 4,
-        quantity: 2,
+        quantity: 1,
         userId: 1,
         productId: 5,
     },
     {
         id: 5,
-        quantity: 4,
+        quantity: 1,
         userId: 2,
         productId: 35,
     },
@@ -561,8 +555,8 @@ async function createStuff() {
         await prisma.user.create({ data: user });
     }
 
-    for (const order of orders) {
-        await prisma.order.create({ data: order });
+    for (const boughtItem of bought) {
+        await prisma.bought.create({ data: boughtItem });
     }
 }
 

@@ -466,7 +466,7 @@ const users = [
         userName: 'avenger22',
         email: 'jurgenhasmeta@email.com',
         fullName: 'Jurgen Hasmeta',
-        password: bcrypt.hashSync('jurgen123', 8),
+        password: bcrypt.hashSync('jurgen123', 8)
     },
     {
         id: 2,
@@ -538,7 +538,66 @@ const bought = [
         id: 5,
         quantity: 1,
         userId: 2,
+        productId: 8,
+    },
+];
+
+const subscribe = [
+    {
+        id: 1,
+        email: "jurgenhasmeta@gmail.com",
+        userId: 1,
+    }
+];
+
+const wishlist = [
+    {
+        id: 1,
+        userId: 1,
+        productId: 3,
+    },
+    {
+        id: 2,
+        userId: 1,
+        productId: 2,
+    },
+    {
+        id: 4,
+        userId: 1,
+        productId: 5,
+    },
+    {
+        id: 5,
+        userId: 2,
         productId: 35,
+    },
+];
+
+const productOrders = [
+    {
+        id: 1,
+        productId: 1,
+        orderId: 1
+    },
+    {
+        id: 2,
+        productId: 5,
+        orderId: 1
+    },
+];
+
+const orders = [
+    {
+        id: 1,
+        firstName: "Jurgen",
+        lastName: "Hasmeta",
+        city: "Tirana",
+        address: "Rr.Qazim Vathi",
+        postCode: "0005",
+        email: "jurgenhasmeta@email.com",
+        phoneNumber: "0685896895",
+        recieveDiscount: false,
+        userId: 1, 
     },
 ];
 
@@ -555,8 +614,24 @@ async function createStuff() {
         await prisma.user.create({ data: user });
     }
 
+    for (const order of orders) {
+        await prisma.order.create({ data: order });
+    }
+
+    for (const wishlistItem of wishlist) {
+        await prisma.wishlist.create({ data: wishlistItem });
+    }
+
+    for (const sub of subscribe) {
+        await prisma.subscribe.create({ data: sub });
+    }
+
     for (const boughtItem of bought) {
         await prisma.bought.create({ data: boughtItem });
+    }
+
+    for (const productOrder of productOrders) {
+        await prisma.productOrder.create({ data: productOrder });
     }
 }
 

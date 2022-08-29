@@ -348,6 +348,44 @@ app.get("/getCategoryByName/:name", async (req, res) => {
   }
 });
 
+app.patch("/updateBought/:id", async (req, res) => {
+  const id = Number(req.params.id);
+  const { userId, productId, quantity } = req.body;
+
+  const updatedBought = {
+    id,
+    userId,
+    productId,
+    quantity,
+  };
+
+  try {
+    const findBought = await prisma.bought.findFirst({ where: { id } });
+
+    if (findBought) {
+      const finalBought = await prisma.bought.update({
+        where: { id },
+        data: updatedBought,
+        include: { product: true, user: true },
+      });
+      const userUpdated = await prisma.user.findFirst({
+        where: { id: userId },
+        include: { boughtItems: { include: { product: true } } },
+      });
+
+      res.status(200).send({
+        finalBought,
+        userUpdated,
+      });
+    } else {
+      res.status(400).send({ error: "error" });
+    }
+  } catch (err) {
+    //@ts-ignore
+    res.status(400).send({ error: err.message });
+  }
+});
+
 app.post("/searchCategoriesByName", async (req, res) => {
   const { name, page } = req.body;
 

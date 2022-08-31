@@ -409,7 +409,10 @@ app.patch('/updateBoughtItemById/:id', async (req, res) => {
             });
             const userUpdated = await prisma.user.findFirst({
                 where: { id: userId },
-                include: { boughtItems: { include: { product: true } } },
+                include: {
+                    wishlistItems: { include: { product: true } },
+                    boughtItems: { include: { product: true } },
+                },
             });
 
             res.status(200).send({
@@ -467,7 +470,10 @@ app.delete('/deleteBoughtItemById/:id', async (req, res) => {
 
             const updatedUser = await prisma.user.findFirst({
                 where: { id: userId },
-                include: { boughtItems: { include: { product: true } } },
+                include: {
+                    wishlistItems: { include: { product: true } },
+                    boughtItems: { include: { product: true } },
+                },
             });
 
             res.send({
@@ -498,7 +504,10 @@ app.post('/createBoughtItem', async (req, res) => {
 
         const updatedUser = await prisma.user.findFirst({
             where: { id: userId },
-            include: { boughtItems: { include: { product: true } } },
+            include: {
+                wishlistItems: { include: { product: true } },
+                boughtItems: { include: { product: true } },
+            },
         });
 
         res.send({
@@ -526,7 +535,10 @@ app.delete('/deleteWishlistItemById/:id', async (req, res) => {
 
             const updatedUser = await prisma.user.findFirst({
                 where: { id: userId },
-                include: { wishlistItems: { include: { product: true } } },
+                include: {
+                    wishlistItems: { include: { product: true } },
+                    boughtItems: { include: { product: true } },
+                },
             });
 
             res.send({
@@ -558,7 +570,10 @@ app.post('/createWishlistItem', async (req, res) => {
 
         const updatedUser = await prisma.user.findFirst({
             where: { id: userId },
-            include: { wishlistItems: { include: { product: true } } },
+            include: {
+                wishlistItems: { include: { product: true } },
+                boughtItems: { include: { product: true } },
+            },
         });
 
         res.send({

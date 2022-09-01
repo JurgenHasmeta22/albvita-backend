@@ -500,20 +500,34 @@ app.post('/createBoughtItem', async (req, res) => {
     };
 
     try {
-        const createdBought = await prisma.bought.create({ data: bought });
-
-        const updatedUser = await prisma.user.findFirst({
-            where: { id: userId },
-            include: {
-                wishlistItems: { include: { product: true } },
-                boughtItems: { include: { product: true } },
-            },
+        const boughtItem = await prisma.bought.findFirst({
+            where: { productId, userId },
         });
+        if (!boughtItem) {
+            const createdBought = await prisma.bought.create({ data: bought });
 
-        res.send({
-            createdBought,
-            updatedUser,
-        });
+            const updatedUser = await prisma.user.findFirst({
+                where: { id: userId },
+                include: {
+                    wishlistItems: { include: { product: true } },
+                    boughtItems: { include: { product: true } },
+                },
+            });
+
+            res.send({
+                createdBought,
+                updatedUser,
+            });
+        } else {
+            const updatedUser = await prisma.user.findFirst({
+                where: { id: userId },
+                include: {
+                    wishlistItems: { include: { product: true } },
+                    boughtItems: { include: { product: true } },
+                },
+            });
+            res.send({updatedUser})
+        }
     } catch (err) {
         //@ts-ignore
         res.status(400).send({ error: err.message });
@@ -564,22 +578,36 @@ app.post('/createWishlistItem', async (req, res) => {
     };
 
     try {
-        const createdWishlist = await prisma.wishlist.create({
-            data: wishlist,
+        const boughtWishlist = await prisma.wishlist.findFirst({
+            where: { productId, userId },
         });
+        if (!boughtWishlist) {
+            const createdWishlist = await prisma.wishlist.create({
+                data: wishlist,
+            });
 
-        const updatedUser = await prisma.user.findFirst({
-            where: { id: userId },
-            include: {
-                wishlistItems: { include: { product: true } },
-                boughtItems: { include: { product: true } },
-            },
-        });
+            const updatedUser = await prisma.user.findFirst({
+                where: { id: userId },
+                include: {
+                    wishlistItems: { include: { product: true } },
+                    boughtItems: { include: { product: true } },
+                },
+            });
 
-        res.send({
-            createdWishlist,
-            updatedUser,
-        });
+            res.send({
+                createdWishlist,
+                updatedUser,
+            });
+        } else {
+            const updatedUser = await prisma.user.findFirst({
+                where: { id: userId },
+                include: {
+                    wishlistItems: { include: { product: true } },
+                    boughtItems: { include: { product: true } },
+                },
+            });
+            res.send({updatedUser})
+        }
     } catch (err) {
         //@ts-ignore
         res.status(400).send({ error: err.message });

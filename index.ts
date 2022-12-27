@@ -1,4 +1,3 @@
-// #region 'Importing and configuration of Prisma'
 import express from 'express';
 import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
@@ -23,9 +22,7 @@ app.get('/', async (req, res) => {
 app.listen(4000, () => {
     console.log(`Server up: http://localhost:4000`);
 });
-// #endregion
 
-// #region "Token, and getting user loggied in, register, validating if user is logged in"
 function createToken(id: number) {
     //@ts-ignore
     const token = jwt.sign({ id: id }, process.env.MY_SECRET, {
@@ -97,11 +94,7 @@ app.get('/validate', async (req, res) => {
         res.status(400).send({ error: err.message });
     }
 });
-// #endregion
 
-// #region "REST API Endpoints"
-
-// #region "Products REST API Endpoints"
 app.get('/getAllProducts/page/:pagenr', async (req, res) => {
     const sortBy = req.query.sortBy;
     const ascOrDesc = req.query.ascOrDesc;
@@ -253,11 +246,6 @@ app.post('/searchProductNameByCategory', async (req, res) => {
         res.status(400).send({ error: err.message });
     }
 });
-// #endregion
-
-// #endregion
-
-// #region "OTHER REST API Endpoints"
 
 app.get('/getAllUsers', async (req, res) => {
     try {
@@ -613,7 +601,5 @@ app.post('/createWishlistItem', async (req, res) => {
         res.status(400).send({ error: err.message });
     }
 });
-
-// #endregion
 
 module.exports = app;
